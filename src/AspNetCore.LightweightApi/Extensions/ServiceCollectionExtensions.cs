@@ -16,7 +16,7 @@ namespace AspNetCore.LightweightApi.Extensions
             {
                 foreach (var type in assembly.GetTypes())
                 {
-                    if (!endpointCollection.IsHandler(type))
+                    if (!EndpointCollection.IsHandler(type))
                         continue;
 
                     services.AddScoped(type);

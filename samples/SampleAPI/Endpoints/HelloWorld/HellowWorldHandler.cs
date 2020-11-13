@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace SampleAPI.Endpoints.GetUsers
 {
-    public class HelloWorldEndpoint : IEndpointHandler
+    public class HellowWorldHandler : IEndpointHandler
     {
         public async Task Handle(HttpContext context)
         {
