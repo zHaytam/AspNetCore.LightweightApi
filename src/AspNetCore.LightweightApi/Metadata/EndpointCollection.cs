@@ -10,6 +10,7 @@ namespace AspNetCore.LightweightApi
     {
         private static readonly Type _basicEndpointType = typeof(IEndpointHandler);
         private static readonly Type _endpointWithOutputType = typeof(IEndpointHandler<>);
+        private static readonly Type _endpointWithInputAndOutputType = typeof(IEndpointHandler<,>);
         private readonly List<EndpointMetadata> _endpoints;
 
         public EndpointCollection()
@@ -24,7 +25,8 @@ namespace AspNetCore.LightweightApi
         public static bool IsHandler(Type type)
         {
             return _basicEndpointType.IsAssignableFrom(type) ||
-                type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithOutputType);
+                type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithOutputType) ||
+                type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithInputAndOutputType);
         }
 
         private static EndpointHandlerType GetHandlerType(Type type)
@@ -34,6 +36,9 @@ namespace AspNetCore.LightweightApi
 
             if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithOutputType))
                 return EndpointHandlerType.WithOutput;
+
+            if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithInputAndOutputType))
+                return EndpointHandlerType.WithInputAndOutput;
 
             throw new InvalidOperationException($"{type.Name} isn't an endpoint handler.");
         }

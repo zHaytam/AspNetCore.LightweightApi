@@ -23,7 +23,7 @@ namespace AspNetCore.LightweightApi.Extensions
                 {
                     EndpointHandlerType.Basic => GetRequestHandler(endpoint.Type),
                     EndpointHandlerType.WithOutput => GetRequestHandlerOfEndpointWithOutput(endpoint.Type),
-                    EndpointHandlerType.WithInputAndOutput => throw new NotImplementedException(),
+                    EndpointHandlerType.WithInputAndOutput => GetRequestHandlerOfEndpointWithInputAndOutput(endpoint.Type),
                     _ => throw new NotImplementedException()
                 };
 
@@ -49,6 +49,38 @@ namespace AspNetCore.LightweightApi.Extensions
                 var result = await handleTask(handler, context);
                 await context.Response.WriteAsJsonAsync(result);
             };
+        }
+
+        private static RequestDelegate GetRequestHandlerOfEndpointWithInputAndOutput(Type type)
+        {
+            var handleTask = Test(type);
+            return async context =>
+            {
+                var handler = context.RequestServices.GetRequiredService(type);
+                var input = await context.Request.ReadFromJsonAsync(type.GetMethod("Handle")!.GetParameters()[0].ParameterType);
+                var result = await handleTask(handler, input, context);
+                await context.Response.WriteAsJsonAsync(result);
+            };
+        }
+
+
+        private static Func<object, object?, HttpContext, Task<object?>> Test(Type type)
+        {
+            var handleMethod = type.GetMethod(nameof(IEndpointHandler.Handle))!;
+            var inputType = handleMethod.GetParameters()[0].ParameterType;
+            var outputGenericArgs = handleMethod.ReturnType.GetGenericArguments();
+
+            var handlerParam = Expression.Parameter(typeof(object), "handler");
+            var inputParam = Expression.Parameter(typeof(object), "input");
+            var contextParam = Expression.Parameter(typeof(HttpContext), "context");
+            var instanceExpr = Expression.TypeAs(handlerParam, type);
+
+            var castedInput = Expression.TypeAs(inputParam, inputType);
+            var call = Expression.Call(instanceExpr, handleMethod, castedInput, contextParam);
+            call = Expression.Call(typeof(EndpointsExtensions), nameof(ConvertTask), outputGenericArgs, call);
+
+            var lambda = Expression.Lambda<Func<object, object?, HttpContext, Task<object?>>>(call, handlerParam, inputParam, contextParam);
+            return lambda.Compile();
         }
 
         private static Func<object, HttpContext, Task<object?>> GenerateTaskConverter(Type type)

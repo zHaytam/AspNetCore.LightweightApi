@@ -1,13 +1,8 @@
 using AspNetCore.LightweightApi.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using SampleAPI.Endpoints.Users.GetUsers;
-using System;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 
 namespace SampleAPI
 {

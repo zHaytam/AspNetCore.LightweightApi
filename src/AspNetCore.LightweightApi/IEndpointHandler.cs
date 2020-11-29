@@ -12,4 +12,9 @@ namespace AspNetCore.LightweightApi
     {
         public Task<TOutput> Handle(HttpContext context);
     }
+
+    public interface IEndpointHandler<TInput, TOutput>
+    {
+        public Task<TOutput> Handle(TInput input, HttpContext context);
+    }
 }
