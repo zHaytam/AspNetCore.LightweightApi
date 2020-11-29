@@ -1,4 +1,4 @@
-﻿using AspNetCore.LightweightApi.Metadata;
+﻿using Microsoft.AspNetCore.Http;
 using System;
 
 namespace AspNetCore.LightweightApi
@@ -7,15 +7,15 @@ namespace AspNetCore.LightweightApi
     {
         public string Pattern { get; set; }
         public EndpointMethod Method { get; set; }
-        public Type Type { get; set; }
-        public EndpointHandlerType HandlerType { get; set; }
+        public Type HandlerType { get; set; }
+        public RequestDelegate RequestDelegate { get; set; }
 
-        public EndpointMetadata(string pattern, EndpointMethod method, Type type, EndpointHandlerType handlerType)
+        public EndpointMetadata(string pattern, EndpointMethod method, Type handlerType, RequestDelegate requestDelegate)
         {
             Pattern = pattern;
             Method = method;
-            Type = type;
             HandlerType = handlerType;
+            RequestDelegate = requestDelegate;
         }
     }
 }
