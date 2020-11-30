@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace SampleAPI.Endpoints.Users
 {
     [Endpoint("/users", Method = EndpointMethod.Post)]
-    public class CreateUserHandler : IEndpointHandler<NewUserDto, UserDto>
+    public class CreateUserHandler : IEndpointHandler.IWithRequest<NewUserDto>.IWithResponse<UserDto>
     {
         public Task<UserDto> Handle(NewUserDto input, HttpContext context)
         {

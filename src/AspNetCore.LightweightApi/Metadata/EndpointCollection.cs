@@ -12,8 +12,9 @@ namespace AspNetCore.LightweightApi
     public class EndpointCollection
     {
         private static readonly Type _basicEndpointType = typeof(IEndpointHandler);
-        private static readonly Type _endpointWithOutputType = typeof(IEndpointHandler<>);
-        private static readonly Type _endpointWithInputAndOutputType = typeof(IEndpointHandler<,>);
+        private static readonly Type _endpointWithRequestType = typeof(IEndpointHandler.IWithRequest<>);
+        private static readonly Type _endpointWithOutputType = typeof(IEndpointHandler.IWithResponse<>);
+        private static readonly Type _endpointWithBothType = typeof(IEndpointHandler.IWithRequest<>.IWithResponse<>);
         private readonly List<EndpointMetadata> _endpoints;
 
         public EndpointCollection()
@@ -28,8 +29,9 @@ namespace AspNetCore.LightweightApi
         public static bool IsHandler(Type type)
         {
             return _basicEndpointType.IsAssignableFrom(type) ||
+                type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithRequestType) ||
                 type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithOutputType) ||
-                type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithInputAndOutputType);
+                type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithBothType);
         }
 
         private static EndpointMetadata ExtractEndpointMetadata(Type type)
@@ -45,15 +47,18 @@ namespace AspNetCore.LightweightApi
             if (_basicEndpointType.IsAssignableFrom(type))
                 return GetRequestHandler(type);
 
-            if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithOutputType))
-                return GetRequestHandlerOfEndpointWithOutput(type);
+            if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithRequestType))
+                return GetRequestHandlerOfEndpointWithRequest(type);
 
-            if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithInputAndOutputType))
-                return GetRequestHandlerOfEndpointWithInputAndOutput(type);
+            if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithOutputType))
+                return GetRequestHandlerOfEndpointWithResponse(type);
+
+            if (type.GetInterfaces().Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == _endpointWithBothType))
+                return GetRequestHandlerOfEndpointWithBoth(type);
 
             throw new InvalidOperationException($"{type.Name} isn't an endpoint handler.");
         }
-            
+
         private static RequestDelegate GetRequestHandler(Type type)
         {
             return async context =>
@@ -63,9 +68,20 @@ namespace AspNetCore.LightweightApi
             };
         }
 
-        private static RequestDelegate GetRequestHandlerOfEndpointWithOutput(Type type)
+        private static RequestDelegate GetRequestHandlerOfEndpointWithRequest(Type type)
         {
-            var handleTask = GenerateHandlerLambda(type);
+            var handleTask = GenerateHandlerLambdaWithRequest(type);
+            return async context =>
+            {
+                var handler = context.RequestServices.GetRequiredService(type);
+                var input = await context.Request.ReadFromJsonAsync(type.GetMethod("Handle")!.GetParameters()[0].ParameterType);
+                await handleTask(handler, input, context);
+            };
+        }
+
+        private static RequestDelegate GetRequestHandlerOfEndpointWithResponse(Type type)
+        {
+            var handleTask = GenerateHandlerLambdaWithResponse(type);
             return async context =>
             {
                 var handler = context.RequestServices.GetRequiredService(type);
@@ -74,9 +90,9 @@ namespace AspNetCore.LightweightApi
             };
         }
 
-        private static RequestDelegate GetRequestHandlerOfEndpointWithInputAndOutput(Type type)
+        private static RequestDelegate GetRequestHandlerOfEndpointWithBoth(Type type)
         {
-            var handleTask = GenerateHandlerLambdaWithInput(type);
+            var handleTask = GenerateHandlerLambdaWithBoth(type);
             return async context =>
             {
                 var handler = context.RequestServices.GetRequiredService(type);
@@ -86,7 +102,24 @@ namespace AspNetCore.LightweightApi
             };
         }
 
-        private static Func<object, HttpContext, Task<object?>> GenerateHandlerLambda(Type type)
+        private static Func<object, object?, HttpContext, Task> GenerateHandlerLambdaWithRequest(Type type)
+        {
+            var handleMethod = type.GetMethod(nameof(IEndpointHandler.Handle))!;
+            var inputType = handleMethod.GetParameters()[0].ParameterType;
+
+            var handlerParam = Expression.Parameter(typeof(object), "handler");
+            var inputParam = Expression.Parameter(typeof(object), "input");
+            var contextParam = Expression.Parameter(typeof(HttpContext), "context");
+            var instanceExpr = Expression.TypeAs(handlerParam, type);
+
+            var castedInput = Expression.TypeAs(inputParam, inputType);
+            var call = Expression.Call(instanceExpr, handleMethod, castedInput, contextParam);
+
+            var lambda = Expression.Lambda<Func<object, object?, HttpContext, Task>>(call, handlerParam, inputParam, contextParam);
+            return lambda.Compile();
+        }
+
+        private static Func<object, HttpContext, Task<object?>> GenerateHandlerLambdaWithResponse(Type type)
         {
             var handleMethod = type.GetMethod(nameof(IEndpointHandler.Handle))!;
             var outputType = handleMethod.ReturnType.GetGenericArguments();
@@ -102,7 +135,7 @@ namespace AspNetCore.LightweightApi
             return lambda.Compile();
         }
 
-        private static Func<object, object?, HttpContext, Task<object?>> GenerateHandlerLambdaWithInput(Type type)
+        private static Func<object, object?, HttpContext, Task<object?>> GenerateHandlerLambdaWithBoth(Type type)
         {
             var handleMethod = type.GetMethod(nameof(IEndpointHandler.Handle))!;
             var inputType = handleMethod.GetParameters()[0].ParameterType;

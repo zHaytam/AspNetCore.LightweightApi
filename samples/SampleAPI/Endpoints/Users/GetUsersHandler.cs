@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 namespace SampleAPI.Endpoints.Users
 {
     [Endpoint("/users")]
-    public class GetUsersHandler : IEndpointHandler<UserDto[]>
+    public class GetUsersHandler : IEndpointHandler.IWithResponse<UserDto[]>
     {
         public Task<UserDto[]> Handle(HttpContext context)
         {
