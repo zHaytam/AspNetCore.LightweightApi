@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace SampleAPI.Endpoints.GetUsers
+namespace Simple.Endpoints.GetUsers
 {
     public class HellowWorldHandler : IEndpointHandler
     {

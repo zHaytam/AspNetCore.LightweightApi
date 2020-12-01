@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace SampleAPI.Endpoints.Users
+namespace Simple.Endpoints.Users
 {
     [Endpoint("/users")]
     public class GetUsersHandler : IEndpointHandler.IWithResponse<UserDto[]>

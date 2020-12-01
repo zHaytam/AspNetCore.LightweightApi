@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace SampleAPI.Endpoints.Users
+namespace Simple.Endpoints.Users
 {
     [Endpoint("/users", Method = EndpointMethod.Post)]
     public class CreateUserHandler : IEndpointHandler.IWithRequest<NewUserDto>.IWithResponse<UserDto>

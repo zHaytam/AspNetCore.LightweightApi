@@ -3,7 +3,7 @@ using AspNetCore.LightweightApi.Extensions;
 using Microsoft.AspNetCore.Http;
 using System.Threading.Tasks;
 
-namespace SampleAPI.Endpoints.Users
+namespace Simple.Endpoints.Users
 {
     [Endpoint("/users/{id}", Method = EndpointMethod.Patch)]
     public class UpdateUserHandler : IEndpointHandler.IWithRequest<UpdateUserDto>

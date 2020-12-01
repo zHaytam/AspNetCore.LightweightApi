@@ -15,7 +15,7 @@
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "SampleAPI": {
+    "Simple": {
       "commandName": "Project",
       "dotnetRunMessages": "true",
       "launchBrowser": true,
