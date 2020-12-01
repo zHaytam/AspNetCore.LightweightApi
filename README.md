@@ -5,15 +5,16 @@ A lightweight & performant framework for APIs, built on top ASP.NET Core (boiler
 ## Example
 
 ```cs
-[Endpoint("/users", Method = EndpointMethod.Post)]
-public class CreateUserHandler : IEndpointHandler<NewUserDto, UserDto>
+[Endpoint("/users/{id}", Method = EndpointMethod.Patch)]
+public class UpdateUserHandler : IEndpointHandler.IWithRequest<UpdateUserDto>
 {
-    public Task<UserDto> Handle(NewUserDto input, HttpContext context)
+    public Task Handle(UpdateUserDto request, HttpContext context)
     {
-        var newUser = new UserDto(1, input.Username, input.Email); // Save in db
-        return Task.FromResult(newUser);
+        var id = context.Request.RouteValues.Get<int>("id");
+        // Update in db
+        return Task.CompletedTask;
     }
 }
 
-public record NewUserDto(string Username, string Email);
+public record UpdateUserDto(string Username, string Email);
 ```
