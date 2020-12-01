@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AspNetCore.LightweightApi",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Simple", "samples\Simple\Simple.csproj", "{81B92FB2-DF7C-4ED5-8714-CD6EFAEBE24B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Middleware", "samples\Middleware\Middleware.csproj", "{043B5D28-A628-458F-829E-E8747E390495}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -25,6 +27,10 @@ Global
 		{81B92FB2-DF7C-4ED5-8714-CD6EFAEBE24B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{81B92FB2-DF7C-4ED5-8714-CD6EFAEBE24B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{81B92FB2-DF7C-4ED5-8714-CD6EFAEBE24B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{043B5D28-A628-458F-829E-E8747E390495}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{043B5D28-A628-458F-829E-E8747E390495}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{043B5D28-A628-458F-829E-E8747E390495}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{043B5D28-A628-458F-829E-E8747E390495}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -32,6 +38,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{9F06FE96-E3E9-4930-B811-B0B09945B927} = {41C0DCFC-36B2-4537-83EC-F4390D8D99D2}
 		{81B92FB2-DF7C-4ED5-8714-CD6EFAEBE24B} = {0AB64C7F-E317-40F4-8528-943C0F0834EF}
+		{043B5D28-A628-458F-829E-E8747E390495} = {0AB64C7F-E317-40F4-8528-943C0F0834EF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA1E8F7F-97B7-48F2-B740-F37D26FC0A71}
