@@ -13,7 +13,12 @@ namespace AspNetCore.LightweightApi.Extensions
             {
                 var httpMethod = endpoint.Method.ToString().ToUpperInvariant();
                 var requestDelegate = endpoint.RequestDelegate;
-                endpoints.MapMethods(endpoint.Pattern, new[] { httpMethod }, requestDelegate);
+
+                var builder = endpoints.MapMethods(endpoint.Pattern, new[] { httpMethod }, requestDelegate);
+                if (endpoint.RequiresAuth)
+                {
+                    builder.RequireAuthorization(endpoint.AuthPolicies);
+                }
             }
         }
     }

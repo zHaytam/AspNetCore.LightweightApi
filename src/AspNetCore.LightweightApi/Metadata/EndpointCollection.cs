@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -39,7 +40,13 @@ namespace AspNetCore.LightweightApi
             var attr = type.GetCustomAttribute<EndpointAttribute>();
             var pattern = attr?.Pattern ?? "/";
             var method = attr?.Method ?? EndpointMethod.Get;
-            return new EndpointMetadata(pattern, method, type, ExtractRequestDelegate(type));
+
+            var authorizeAttr = type.GetCustomAttribute<AuthorizeAttribute>();
+            var requiresAuth = authorizeAttr != null;
+            var authPolicies = authorizeAttr?.Policy?.Split() ?? Array.Empty<string>();
+
+            return new EndpointMetadata(pattern, method, type, ExtractRequestDelegate(type),
+                requiresAuth, authPolicies);
         }
 
         private static RequestDelegate ExtractRequestDelegate(Type type)
