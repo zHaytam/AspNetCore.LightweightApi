@@ -15,6 +15,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Middleware", "samples\Middl
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Auth", "samples\Auth\Auth.csproj", "{A6EA7771-CE21-4F19-9267-94A055084728}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{019691EF-3B7B-48BE-9CE9-3107F6B66B06}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AspNetCore.LightweightApi.UnitTests", "test\AspNetCore.LightweightApi.UnitTests\AspNetCore.LightweightApi.UnitTests.csproj", "{58F52C36-35C9-439E-8FBB-8058558ECFA8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -37,6 +41,10 @@ Global
 		{A6EA7771-CE21-4F19-9267-94A055084728}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A6EA7771-CE21-4F19-9267-94A055084728}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A6EA7771-CE21-4F19-9267-94A055084728}.Release|Any CPU.Build.0 = Release|Any CPU
+		{58F52C36-35C9-439E-8FBB-8058558ECFA8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{58F52C36-35C9-439E-8FBB-8058558ECFA8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{58F52C36-35C9-439E-8FBB-8058558ECFA8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{58F52C36-35C9-439E-8FBB-8058558ECFA8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -46,6 +54,7 @@ Global
 		{81B92FB2-DF7C-4ED5-8714-CD6EFAEBE24B} = {0AB64C7F-E317-40F4-8528-943C0F0834EF}
 		{043B5D28-A628-458F-829E-E8747E390495} = {0AB64C7F-E317-40F4-8528-943C0F0834EF}
 		{A6EA7771-CE21-4F19-9267-94A055084728} = {0AB64C7F-E317-40F4-8528-943C0F0834EF}
+		{58F52C36-35C9-439E-8FBB-8058558ECFA8} = {019691EF-3B7B-48BE-9CE9-3107F6B66B06}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {CA1E8F7F-97B7-48F2-B740-F37D26FC0A71}
